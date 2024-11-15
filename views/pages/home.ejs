@@ -58,15 +58,15 @@
 
     <!-- Data Table -->
     <div class="table-responsive">
-        <table class="table table-bordered">
+        <table class="table table-bordered table-hover">
             <thead>
                 <tr>
                     <th style="width: 5%;">UserID</th>
                     <th style="width: 25%;">Name</th>
                     <th style="width: 25%;">Email</th>
-                    <th style="width: 20%;">Mobile</th>
-                    <th style="width: 15%;">Gender</th>
-                    <th style="width: 10%;" class="text-center">Action</th>
+                    <th style="width: 15%;">Mobile</th>
+                    <th style="width: 10%;">Gender</th>
+                    <th style="width: 20%;" class="text-center">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -90,13 +90,13 @@
                             </td>
                             <td class="text-center">
                                 <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#viewUserModal"
-                                    onclick="viewUser('<%= user.id %>','view')"><i
-                                        class="fa-solid fa-address-card"></i></button>
+                                    onclick="viewUser('<%= user.id %>','view')"><i class="fa-solid fa-address-card"></i>
+                                    View</button>
                                 <button class="btn btn-warning btn-xs" data-toggle="modal"
                                     data-target="#updateUserModal" onclick="viewUser('<%= user.id %>','update')"><i
-                                        class="fa fa-pencil"></i></button>
+                                        class="fa fa-pencil"></i> Update</button>
                                 <button class="btn btn-danger btn-xs" onclick="confirmDelete('<%= user.id %>')"><i
-                                        class="fa fa-trash"></i></button>
+                                        class="fa fa-trash"></i> Delete</button>
                             </td>
                         </tr>
                         <% }) %>
@@ -283,7 +283,6 @@
                         } else {
                             $('#Female').prop('checked', true);
                         }
-                        $('#updateForm').attr('action', `/user/update/${userData.id}`);
                     } else if (modalType === "update") {
                         $('#updateName').val(userData.name);
                         $('#updateEmail').val(userData.email);
