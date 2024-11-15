@@ -3,10 +3,25 @@ const { CONFIG } = require('./config/config');
 const app = express();
 const path = require('path');
 const { pool } = require('./config/db')
+const flash = require('connect-flash');
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+
 
 //parse body data 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+
+//set cookie-session for flash
+app.use(cookieParser('NotSoSecret'));
+app.use(session({
+    secret: 'something',
+    cookie: { maxAge: 60000 },
+    resave: true,
+    saveUninitialized: true
+}));
+app.use(flash());
 
 //set ejs as view engine and directory
 app.set('view engine', 'ejs');
@@ -31,7 +46,7 @@ app.get("/", (req, res) => {
             return response.json();
         })
         .then((data) => {
-            res.render('home', { userData: data.data }); // Render the page with fetched data
+            res.render('home', { userData: data.data, messages: req.flash() }); // Render the page with fetched data
         })
         .catch((error) => {
             console.error('Error fetching data:', error);

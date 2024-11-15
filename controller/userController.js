@@ -16,6 +16,7 @@ exports.insert = async (req, res) => {
                     })
 
                 }
+                req.flash('success', 'User added successfully!');
                 res.redirect('/');
             });
         });
@@ -125,6 +126,7 @@ exports.updateUser = async (req, res) => {
                             status: 500
                         })
                     }
+                    req.flash('success', 'User updated successfully!');
                     res.redirect('/');
                 }
             )
@@ -154,6 +156,8 @@ exports.deleteUser = async (req, res) => {
                             status: 500
                         });
                     }
+                    req.flash('error', 'User Deleted successfully!');
+
                     return res.status(200).json({
                         message: "User deleted successfully",
                         status: 200
