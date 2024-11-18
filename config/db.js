@@ -6,9 +6,8 @@ const { CONFIG } = require('./config');
 module.exports.pool = mysql.createPool({
     host: CONFIG.db_host,
     user: CONFIG.db_user,
-    password: CONFIG.db_password, 
+    password: '', 
     database: CONFIG.db_name,
-    port: CONFIG.db_port,
 });
 
 
