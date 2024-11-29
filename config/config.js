@@ -9,4 +9,5 @@ module.exports.CONFIG = {
     db_password: process.env.DB_PASSWORD,
     db_name: process.env.DB_NAME,
     db_port: process.env.DB_PORT,
+    baseURL: process.env.BASE_URL
 }

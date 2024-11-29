@@ -8,6 +8,7 @@ router.get("/list", userController.viewData);
 router.get("/view/:id", userController.viewUser);
 router.post("/update/:id", userController.updateUser);
 router.delete("/delete/:id", userController.deleteUser);
+// router.post("/search", userController.searchUser);
 
 
 module.exports = router;

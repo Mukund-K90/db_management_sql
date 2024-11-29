@@ -34,11 +34,20 @@ pool.getConnection((err, connection) => {
         return;
     }
     console.log('Connected to the database!');
-    connection.release(); // Release the connection back to the pool
+    connection.release();
 });
 
 app.get("/", (req, res) => {
-    fetch('http://localhost:1000/user/list')
+    return res.render("login", { messages: req.flash() });
+});
+
+app.get("/dashboard", (req, res) => {
+    const searchQuery = req.query.name || '';  // Get search query from request (default is empty string)
+
+    // Create the search URL, including the query parameter
+    const searchUrl = `${CONFIG.baseURL}/user/list?name=${searchQuery}`;
+
+    fetch(searchUrl)
         .then((response) => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -46,7 +55,11 @@ app.get("/", (req, res) => {
             return response.json();
         })
         .then((data) => {
-            res.render('home', { userData: data.data, messages: req.flash() }); // Render the page with fetched data
+            res.render('home', {
+                userData: data.data,
+                messages: req.flash(),
+                searchQuery: searchQuery  // Pass search query to the view
+            });
         })
         .catch((error) => {
             console.error('Error fetching data:', error);
@@ -54,9 +67,14 @@ app.get("/", (req, res) => {
         });
 });
 
+
 //define user route
 const userRoute = require('./routes/userRoutes');
 app.use('/user', userRoute);
+
+//define admin route
+const adminRoute = require('./routes/adminRoutes');
+app.use('/admin', adminRoute);
 
 //listen server
 const PORT = CONFIG.port || 8080;

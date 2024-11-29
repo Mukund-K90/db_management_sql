@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Login</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <style>
+        body {
+            background-color: #f7f9fc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-container {
+            width: 30%;
+            padding: 20px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .login-header h3 {
+            margin: 0;
+            color: #333;
+        }
+
+        .btn-primary {
+            background-color: #337ab7;
+            border-color: #2e6da4;
+        }
+
+        .btn-primary:hover {
+            background-color: #286090;
+            border-color: #204d74;
+        }
+
+        #flashMessage {
+            position: fixed;
+            top: 10%;
+            left: 85%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            width: 45%;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Flash Messages -->
+    <% if (messages.success) { %>
+        <div id="flashMessage" class="alert alert-success">
+            <%= messages.success %>
+        </div>
+        <% } %>
+            <% if (messages.error) { %>
+                <div id="flashMessage" class="alert alert-danger">
+                    <%= messages.error %>
+                </div>
+                <% } %>
+
+                    <!-- Login Layout -->
+                    <div class="login-container">
+                        <div class="login-header">
+                            <h3>Admin Login</h3>
+                        </div>
+                        <form action="/admin/login" method="POST">
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                    placeholder="Enter your email" required value="john.admin@yopmail.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" class="form-control" id="password" name="password"
+                                    placeholder="Enter your password" required value="admin123">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Login</button>
+                        </form>
+                    </div>
+
+                    <script>
+                        setTimeout(() => {
+                            document.getElementById("flashMessage").style.display = 'none';
+                        }, 2000);
+                    </script>
+</body>
+
+</html>

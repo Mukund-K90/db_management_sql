@@ -17,7 +17,7 @@ exports.insert = async (req, res) => {
 
                 }
                 req.flash('success', 'User added successfully!');
-                res.redirect('/');
+                res.redirect('/dashboard');
             });
         });
     } catch (error) {
@@ -31,54 +31,69 @@ exports.insert = async (req, res) => {
 //user List
 exports.viewData = async (req, res) => {
     try {
-        /* -- Connect to DB -- */
+        // Get the search query if provided
+        const srchValue = req.query.name;
+
+        // Set up the query to fetch all users by default
+        let query = "SELECT * FROM umsData";
+        let queryParams = [];
+
+        // If there's a search value, filter users by name
+        if (srchValue) {
+            query += " WHERE name LIKE ?";
+            queryParams.push('%' + srchValue + '%');
+        }
+
+        // Get a database connection
         pool.getConnection((err, connection) => {
-            if (err) throw err; //not connected!
+            if (err) throw err;
 
-            // user the connection
-            connection.query(
-                "SELECT * FROM umsData",
-                (err, rows) => {
-                    connection.release();
+            // Query the database
+            connection.query(query, queryParams, (err, rows) => {
+                connection.release();
 
-                    if (err) {
-                        return res.status(500).json({
-                            message: "DATABASE QUERY ERROR",
-                            status: 500
-                        })
-
-                    }
-                    if (!rows || rows.length == 0) {
-                        return res.status(401).json({
-                            message: "USERS NOT FOUND",
-                            status: 401
-                        })
-                    }
-                    const formatdUser = rows.map(row => ({
-                        id: row.id,
-                        name: row.name,
-                        email: row.email,
-                        mobile: row.mobile,
-                        gender: row.gender
-                    }));
-
-                    return res.status(200).json({
-                        message: "GET ALL USERS LIST SHOW SUCCESSFULLY",
-                        status: 200,
-                        totalUser: rows.length,
-                        data: formatdUser
-                    })
+                if (err) {
+                    return res.status(500).json({
+                        message: "DATABASE QUERY ERROR",
+                        status: 500
+                    });
                 }
-            );
+
+                if (!rows || rows.length === 0) {
+                    return res.status(401).json({
+                        message: "USERS NOT FOUND",
+                        status: 401
+                    });
+                }
+
+                // Format the user data
+                const formattedUsers = rows.map(row => ({
+                    id: row.id,
+                    name: row.name,
+                    email: row.email,
+                    mobile: row.mobile,
+                    gender: row.gender
+                }));
+
+                // Return the response with the data
+                return res.status(200).json({
+                    message: "Users fetched successfully",
+                    status: 200,
+                    totalUsers: rows.length,
+                    data: formattedUsers
+                });
+            });
         });
 
     } catch (error) {
+        console.error(error);
         return res.status(500).json({
             message: error.message,
             status: 500
-        })
+        });
     }
 };
+
 
 //view User
 exports.viewUser = async (req, res) => {
@@ -121,13 +136,15 @@ exports.updateUser = async (req, res) => {
                 "UPDATE umsData SET ? WHERE id = ?", [params, req.params.id], (err, row) => {
                     connection.release();
                     if (err) {
-                        return res.status(500).json({
-                            message: "DATABASE QUERY ERROR",
-                            status: 500
-                        })
+                        req.flash('error', 'User update failed!');
+                        return res.redirect('/dashboard');
+                        // return res.status(500).json({
+                        //     message: "DATABASE QUERY ERROR",
+                        //     status: 500
+                        // })
                     }
                     req.flash('success', 'User updated successfully!');
-                    res.redirect('/');
+                    return res.redirect('/dashboard');
                 }
             )
         })
@@ -173,5 +190,35 @@ exports.deleteUser = async (req, res) => {
         });
     }
 };
+
+
+//serch by value
+
+// exports.searchUser = async (req, res) => {
+//     try {
+//         const srchValue = req.query.name;
+//         console.log(srchValue);
+        
+//         pool.getConnection((err, connection) => {
+//             if (err) throw err;
+//             connection.query("SELECT * FROM umsData WHERE name LIKE ?", ['%' + srchValue + '%'], (err, row) => {
+//                 connection.release();
+//                 if (err) {
+//                     return res.status(500).json({
+//                         message: "DATABASE QUERY ERROR",
+//                         status: 500
+//                     });
+//                 }
+//                 return res.status(200).json(row);
+//             })
+//         })
+//     } catch (error) {
+//         console.error(error);
+//         return res.status(500).json({
+//             message: "Internal server error",
+//             status: 500
+//         });
+//     }
+// }
 
 
